@@ -2087,7 +2087,13 @@ public class Element extends Node implements Iterable<Element> {
         // simpler than implementing a clone version with no child copy
         String baseUri = baseUri();
         if (baseUri.isEmpty()) baseUri = null; // saves setting a blank internal attribute
-        return new Element(tag, baseUri, attributes == null ? null : attributes.clone());
+        Attributes attrs = attributes == null ? null : attributes.clone();
+        if (attrs != null) {
+            // clear any cached children so the clone reports its own children
+            attrs.userData(childElsKey, null);
+            attrs.userData(childElsMod, null);
+        }
+        return new Element(tag, baseUri, attrs);
     }
 
     @Override

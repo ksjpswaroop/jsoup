@@ -294,7 +294,12 @@ public class Document extends Element {
     @Override
     public Document shallowClone() {
         Document clone = new Document(this.tag().namespace(), baseUri(), parser); // preserves parser pointer
-        if (attributes != null) clone.attributes = attributes.clone();
+        if (attributes != null) {
+            clone.attributes = attributes.clone();
+            // clear any cached children so the clone reports its own children
+            clone.attributes.userData("jsoup.childEls", null);
+            clone.attributes.userData("jsoup.childElsMod", null);
+        }
         clone.outputSettings = this.outputSettings.clone();
         return clone;
     }
